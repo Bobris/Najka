@@ -13,9 +13,23 @@ namespace NajkaLib
         IgnoreCaseAndDiacritics = 3
     }
 
+    public struct WordLemmaTaxonomy
+    {
+        public WordLemmaTaxonomy(string word, string lemma, string taxonomy)
+        {
+            Word = word;
+            Lemma = lemma;
+            Taxonomy = taxonomy;
+        }
+        public readonly string Word;
+        public readonly string Lemma;
+        public readonly string Taxonomy;
+    }
+
+
     public class FsaNajka
     {
-        byte _type;
+        readonly byte _type;
         readonly char[] _id2Char;
         readonly char[][] _id2ConvertedChar;
         readonly byte[] _tree;
@@ -102,6 +116,26 @@ namespace NajkaLib
             IterateRaw(new StringBuilder(100), 0, onItem);
         }
 
+        public void FindNicer(string word, CompareType mode, Action<WordLemmaTaxonomy> onFound)
+        {
+            Find(word, mode, s => onFound(String2WordLemmaTaxonomy(s)));
+        }
+
+        WordLemmaTaxonomy String2WordLemmaTaxonomy(string text)
+        {
+            var split = text.Split(':');
+            switch (_type)
+            {
+                case 129: // w-lt
+                    return new WordLemmaTaxonomy(split[0], split[1], split[2]);
+                case 131: // lt-w
+                    return new WordLemmaTaxonomy(split[2], split[0], split[1]);
+                case 132: // l-wt
+                    return new WordLemmaTaxonomy(split[1], split[0], split[2]);
+            }
+            throw new ArgumentOutOfRangeException();
+        }
+
         public void Find(string word, CompareType mode, Action<string> onFound)
         {
             switch (mode)
@@ -177,7 +211,7 @@ namespace NajkaLib
                                + sb.ToString(firstq + 3 + prefix, sb.Length - (firstq + 3 + prefix));
                     }
             }
-            throw new NotImplementedException();
+            throw new ArgumentOutOfRangeException();
         }
 
         void Match(string word, CompareType mode, StringBuilder sb, int ofs, Action<int> onFound)

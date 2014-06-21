@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace Prototype
     {
         static void Main(string[] args)
         {
-            var fsa = new FsaNajka(File.OpenRead("../../../lt-w.naj"));
-            fsa.Find("desetiintelektualsky", CompareType.IgnoreCaseAndDiacritics, Console.WriteLine);
+            var fsa = new FsaNajka(File.OpenRead("../../../l-wt.naj"));
+            fsa.FindNicer("minut", CompareType.IgnoreCaseAndDiacritics, wlt => Console.WriteLine("{0} {1} {2}", wlt.Lemma,wlt.Taxonomy, wlt.Word));
             Console.ReadKey();
         }
     }
