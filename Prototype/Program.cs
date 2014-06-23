@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NajkaLib;
 
 namespace Prototype
@@ -12,8 +8,12 @@ namespace Prototype
     {
         static void Main(string[] args)
         {
-            var fsa = new FsaNajka(File.OpenRead("../../../l-wt.naj"));
-            fsa.FindNicer("minut", CompareType.IgnoreCaseAndDiacritics, wlt => Console.WriteLine("{0} {1} {2}", wlt.Lemma,wlt.Taxonomy, wlt.Word));
+            var fsa = new FsaNajka(File.OpenRead("../../../w-lt.naj"));
+            fsa.FindNicer("minut", CompareType.IgnoreCaseAndDiacritics, wlt =>
+            {
+                Console.WriteLine("{0} {1} {2}", wlt.Lemma, wlt.Taxonomy, wlt.Word);
+                Console.WriteLine("     {0}", string.Join(", ", TaxonomyExplainer.CzechExplain(wlt.Taxonomy)));
+            });
             Console.ReadKey();
         }
     }
